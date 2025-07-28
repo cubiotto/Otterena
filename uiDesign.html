@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCM - Test Case Management</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles & Configuration -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        /* Simple transition for view switching */
+        .view {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+    <div class="flex h-screen bg-slate-100">
+        <!-- Main Navigation Sidebar -->
+        <nav class="w-20 bg-white border-r border-slate-200 flex flex-col items-center py-4 shrink-0">
+            <!-- Logo -->
+            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg mb-8">
+                T
+            </div>
+            <!-- Navigation Links -->
+            <ul class="flex flex-col items-center space-y-2">
+                <li>
+                    <a href="#" class="nav-link active-nav-link" title="Dashboard" onclick="switchView('dashboard', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" title="Test Repository" onclick="switchView('repository', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" title="Test Plans" onclick="switchView('plans', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" title="Test Runs" onclick="switchView('runs', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white border-b border-slate-200 p-4 flex items-center justify-between shrink-0">
+                <!-- Left Section: Project Selector & Title -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">
+                            <span class="font-semibold text-slate-700">Project Phoenix</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+                    </div>
+                    <h1 id="view-title" class="text-xl font-bold text-slate-800">Dashboard</h1>
+                </div>
+
+                <!-- Right Section: Search, Actions, Profile -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <input type="text" placeholder="Search cases, plans..." class="bg-slate-100 rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="relative">
+                         <button onclick="toggleDropdown('add-dropdown')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                            <span>Add New</span>
+                        </button>
+                        <div id="add-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-10">
+                            <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Test Case</a>
+                            <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Test Suite</a>
+                            <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100">Test Plan</a>
+                        </div>
+                    </div>
+                    <button class="p-2 rounded-full hover:bg-slate-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                    </button>
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=AV" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-6">
+                
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="view">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- My Active Test Runs -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
+                            <h2 class="font-bold text-lg mb-4">My Active Test Runs</h2>
+                            <div class="space-y-4">
+                                <!-- Run Item 1 -->
+                                <div class="p-4 border border-slate-200 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="font-semibold">Android v2.5 Sanity Check</h3>
+                                        <span class="text-xs font-medium text-slate-500">Due: 3 Days</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 45%"></div>
+                                        </div>
+                                        <span class="font-semibold text-sm">45%</span>
+                                    </div>
+                                </div>
+                                <!-- Run Item 2 -->
+                                <div class="p-4 border border-slate-200 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="font-semibold">iOS v2.5 Full Regression</h3>
+                                        <span class="text-xs font-medium text-slate-500">Due: 5 Days</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 15%"></div>
+                                        </div>
+                                        <span class="font-semibold text-sm">15%</span>
+                                    </div>
+                                </div>
+                                <!-- Run Item 3 -->
+                                <div class="p-4 border border-slate-200 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="font-semibold">Web App - New Onboarding Flow</h3>
+                                        <span class="text-xs font-medium text-red-500">Overdue</span>
+                                    </div>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-full bg-slate-200 rounded-full h-2.5">
+                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 80%"></div>
+                                        </div>
+                                        <span class="font-semibold text-sm">80%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Test Run Results -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <h2 class="font-bold text-lg mb-4">Test Run Results (Last 7d)</h2>
+                            <div class="flex items-center justify-center space-x-6">
+                                <div class="relative w-36 h-36">
+                                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                                        <path class="text-slate-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+                                        <path class="text-emerald-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="65, 100" stroke-dashoffset="-0"></path>
+                                        <path class="text-red-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="15, 100" stroke-dashoffset="-65"></path>
+                                        <path class="text-amber-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="10, 100" stroke-dashoffset="-80"></path>
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span class="text-2xl font-bold">1,245</span>
+                                        <span class="text-sm text-slate-500">Total</span>
+                                    </div>
+                                </div>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-center"><span class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></span>Passed: <span class="font-semibold ml-1">809</span></li>
+                                    <li class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>Failed: <span class="font-semibold ml-1">187</span></li>
+                                    <li class="flex items-center"><span class="w-3 h-3 rounded-full bg-amber-500 mr-2"></span>Blocked: <span class="font-semibold ml-1">124</span></li>
+                                    <li class="flex items-center"><span class="w-3 h-3 rounded-full bg-slate-300 mr-2"></span>Untested: <span class="font-semibold ml-1">125</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Project Activity Stream -->
+                        <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-sm">
+                            <h2 class="font-bold text-lg mb-4">Project Activity</h2>
+                            <ul class="space-y-4">
+                                <li class="flex items-start space-x-3">
+                                    <img src="https://placehold.co/32x32/C7D2FE/3730A3?text=SA" alt="User" class="w-8 h-8 rounded-full">
+                                    <div>
+                                        <p class="text-sm"><span class="font-semibold">Sarah Adams</span> completed test run <a href="#" class="text-indigo-600 font-medium">TR-102: Web App - New Onboarding Flow</a>.</p>
+                                        <p class="text-xs text-slate-500">2 hours ago</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <img src="https://placehold.co/32x32/DDD6FE/4338CA?text=MJ" alt="User" class="w-8 h-8 rounded-full">
+                                    <div>
+                                        <p class="text-sm"><span class="font-semibold">Mike Johnson</span> added a new test case <a href="#" class="text-indigo-600 font-medium">TC-451: Verify password reset email link</a>.</p>
+                                        <p class="text-xs text-slate-500">5 hours ago</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <img src="https://placehold.co/32x32/E0E7FF/312E81?text=AD" alt="User" class="w-8 h-8 rounded-full">
+                                    <div>
+                                        <p class="text-sm"><span class="font-semibold">Alex Doe</span> reported a new defect from test case <a href="#" class="text-indigo-600 font-medium">TC-302</a>.</p>
+                                        <p class="text-xs text-slate-500">Yesterday</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Repository View -->
+                <div id="repository-view" class="view hidden h-full">
+                    <div class="flex h-full space-x-6">
+                        <!-- Left Pane: Suite Tree -->
+                        <div class="w-1/4 bg-white rounded-xl shadow-sm p-4 overflow-y-auto">
+                            <h2 class="font-bold text-lg mb-4 px-2">Test Suites</h2>
+                            <ul class="space-y-1 text-slate-600">
+                                <li>
+                                    <a href="#" class="flex items-center px-2 py-1.5 rounded-md bg-indigo-100 text-indigo-700 font-semibold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                        <span>Authentication</span>
+                                    </a>
+                                </li>
+                                <li class="pl-4">
+                                    <a href="#" class="flex items-center px-2 py-1.5 rounded-md hover:bg-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                        <span>Login & Logout</span>
+                                    </a>
+                                </li>
+                                <li class="pl-4">
+                                    <a href="#" class="flex items-center px-2 py-1.5 rounded-md hover:bg-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                        <span>Password Reset</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center px-2 py-1.5 rounded-md hover:bg-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                        <span>User Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="flex items-center px-2 py-1.5 rounded-md hover:bg-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                                        <span>Payments</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Middle Pane: Test Case List -->
+                        <div class="w-1/2 bg-white rounded-xl shadow-sm overflow-y-auto">
+                           <div class="p-4 border-b border-slate-200">
+                                <h2 class="font-bold text-lg">Authentication Cases</h2>
+                           </div>
+                           <table class="w-full text-sm text-left">
+                               <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                                   <tr>
+                                       <th scope="col" class="p-4"><input type="checkbox" class="rounded border-slate-300"></th>
+                                       <th scope="col" class="py-3 px-6">ID</th>
+                                       <th scope="col" class="py-3 px-6">Title</th>
+                                       <th scope="col" class="py-3 px-6">Priority</th>
+                                       <th scope="col" class="py-3 px-6">Author</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr class="bg-white border-b hover:bg-slate-50">
+                                       <td class="p-4"><input type="checkbox" class="rounded border-slate-300"></td>
+                                       <td class="py-4 px-6 font-medium text-slate-500">TC-201</td>
+                                       <th scope="row" class="py-4 px-6 font-medium text-slate-900 whitespace-nowrap">Verify login with valid credentials</th>
+                                       <td class="py-4 px-6"><span class="bg-red-100 text-red-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">P0</span></td>
+                                       <td class="py-4 px-6">Alex Doe</td>
+                                   </tr>
+                                    <tr class="bg-white border-b hover:bg-slate-50">
+                                       <td class="p-4"><input type="checkbox" class="rounded border-slate-300"></td>
+                                       <td class="py-4 px-6 font-medium text-slate-500">TC-202</td>
+                                       <th scope="row" class="py-4 px-6 font-medium text-slate-900 whitespace-nowrap">Verify login with invalid password</th>
+                                       <td class="py-4 px-6"><span class="bg-orange-100 text-orange-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">P1</span></td>
+                                       <td class="py-4 px-6">Alex Doe</td>
+                                   </tr>
+                                   <tr class="bg-indigo-50 border-b border-indigo-200">
+                                       <td class="p-4"><input type="checkbox" class="rounded border-slate-300"></td>
+                                       <td class="py-4 px-6 font-medium text-slate-500">TC-203</td>
+                                       <th scope="row" class="py-4 px-6 font-bold text-indigo-900 whitespace-nowrap">Verify "Forgot Password" link functionality</th>
+                                       <td class="py-4 px-6"><span class="bg-orange-100 text-orange-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">P1</span></td>
+                                       <td class="py-4 px-6">Sarah Adams</td>
+                                   </tr>
+                                   <tr class="bg-white border-b hover:bg-slate-50">
+                                       <td class="p-4"><input type="checkbox" class="rounded border-slate-300"></td>
+                                       <td class="py-4 px-6 font-medium text-slate-500">TC-204</td>
+                                       <th scope="row" class="py-4 px-6 font-medium text-slate-900 whitespace-nowrap">Verify logout functionality</th>
+                                       <td class="py-4 px-6"><span class="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">P2</span></td>
+                                       <td class="py-4 px-6">Mike Johnson</td>
+                                   </tr>
+                               </tbody>
+                           </table>
+                        </div>
+                        <!-- Right Pane: Test Case Detail -->
+                        <div class="w-1/4 flex-1 bg-white rounded-xl shadow-sm overflow-y-auto">
+                            <div class="p-4 border-b border-slate-200">
+                                <div class="flex justify-between items-center">
+                                    <h2 class="font-bold text-lg">TC-203 Details</h2>
+                                    <button class="bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold">Edit</button>
+                                </div>
+                            </div>
+                            <div class="p-6 space-y-6">
+                                <div>
+                                    <h3 class="font-semibold text-slate-800">Verify "Forgot Password" link functionality</h3>
+                                    <p class="text-sm text-slate-500 mt-1">Check that the password reset flow can be initiated successfully.</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div><span class="font-semibold text-slate-500">Priority:</span> <span class="font-medium text-orange-600">P1</span></div>
+                                    <div><span class="font-semibold text-slate-500">Type:</span> <span class="font-medium">Functional</span></div>
+                                    <div><span class="font-semibold text-slate-500">Author:</span> <span class="font-medium">Sarah Adams</span></div>
+                                    <div><span class="font-semibold text-slate-500">Est. Time:</span> <span class="font-medium">5 min</span></div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold mb-2">Preconditions</h4>
+                                    <p class="text-sm text-slate-600 bg-slate-50 p-3 rounded-md border border-slate-200">User must be on the login page. An account with email 'test@example.com' must exist in the database.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold mb-2">Steps</h4>
+                                    <ol class="space-y-4 text-sm">
+                                        <li class="flex space-x-4">
+                                            <div class="flex-shrink-0 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">1</div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-slate-800">Navigate to the login page.</p>
+                                                <p class="text-xs text-slate-500 mt-1">Expected: Page loads correctly.</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex space-x-4">
+                                            <div class="flex-shrink-0 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">2</div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-slate-800">Click on the "Forgot Password?" link.</p>
+                                                <p class="text-xs text-slate-500 mt-1">Expected: User is redirected to the password reset page.</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex space-x-4">
+                                            <div class="flex-shrink-0 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">3</div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-slate-800">Enter a valid, registered email and submit.</p>
+                                                <p class="text-xs text-slate-500 mt-1">Expected: A confirmation message "Password reset email sent" is displayed.</p>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Plans View (Placeholder) -->
+                <div id="plans-view" class="view hidden">
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                        <h2 class="text-xl font-bold mb-2">Test Plans</h2>
+                        <p class="text-slate-500">This view would contain a list of test plans and the interface to create and manage them.</p>
+                    </div>
+                </div>
+
+                <!-- Test Runs View (Placeholder) -->
+                <div id="runs-view" class="view hidden">
+                    <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                        <h2 class="text-xl font-bold mb-2">Test Runs</h2>
+                        <p class="text-slate-500">This view would be dedicated to executing test runs, showing test cases, and recording results.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const views = ['dashboard', 'repository', 'plans', 'runs'];
+        const viewElements = {
+            dashboard: document.getElementById('dashboard-view'),
+            repository: document.getElementById('repository-view'),
+            plans: document.getElementById('plans-view'),
+            runs: document.getElementById('runs-view'),
+        };
+        const viewTitle = document.getElementById('view-title');
+        const viewTitles = {
+            dashboard: 'Dashboard',
+            repository: 'Test Repository',
+            plans: 'Test Plans',
+            runs: 'Test Runs',
+        };
+
+        // --- View Switching Logic ---
+        function switchView(viewName, clickedLink) {
+            // Hide all views
+            views.forEach(view => {
+                viewElements[view].classList.add('hidden');
+                viewElements[view].style.opacity = 0;
+            });
+
+            // Show the selected view
+            if (viewElements[viewName]) {
+                viewElements[viewName].classList.remove('hidden');
+                // Use a timeout to allow the display property to apply before changing opacity for the transition
+                setTimeout(() => {
+                    viewElements[viewName].style.opacity = 1;
+                }, 10);
+            }
+
+            // Update the main title
+            viewTitle.textContent = viewTitles[viewName] || 'Dashboard';
+
+            // Update active state on nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active-nav-link');
+            });
+            clickedLink.classList.add('active-nav-link');
+        }
+
+        // --- Dropdown Logic ---
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            if (dropdown) {
+                dropdown.classList.toggle('hidden');
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('button') && !event.target.closest('button')) {
+                const dropdowns = document.getElementsByClassName("absolute");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (!openDropdown.classList.contains('hidden') && openDropdown.id === 'add-dropdown') {
+                        openDropdown.classList.add('hidden');
+                    }
+                }
+            }
+        }
+
+        // --- Initial Setup ---
+        // Add active styles to the nav link class
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .active-nav-link {
+                background-color: #EEF2FF; /* indigo-100 */
+                color: #4338CA; /* indigo-700 */
+                position: relative;
+            }
+            .active-nav-link::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 4px;
+                height: 60%;
+                background-color: #4F46E5; /* indigo-600 */
+                border-radius: 0 4px 4px 0;
+            }
+            .nav-link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                border-radius: 12px;
+                color: #475569; /* slate-600 */
+                transition: all 0.2s ease-in-out;
+            }
+            .nav-link:hover {
+                background-color: #F1F5F9; /* slate-100 */
+                color: #1E293B; /* slate-800 */
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Set initial view to dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            viewElements.dashboard.style.opacity = 1;
+        });
+
+    </script>
+</body>
+</html>
